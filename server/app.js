@@ -38,7 +38,7 @@ app.use(cookieParser());
 //   })
 // );
 app.use(
-  cors
+  cors()
 );
 
 app.use(helmet({ contentSecurityPolicy: false }));
