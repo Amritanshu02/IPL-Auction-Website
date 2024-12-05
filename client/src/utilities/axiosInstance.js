@@ -12,7 +12,7 @@ const url =
 
 const axiosInstance = axios.create({
   withCredentials: true,
-  baseURL: "https://ipl-auction-website.vercel.app/",
+  baseURL: "https://ipl-auction-website.onrender.com",
 });
 
 export default axiosInstance;

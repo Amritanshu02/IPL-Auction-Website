@@ -11,7 +11,7 @@ let socket;
 // };
 
 const connect = () => {
-  socket = io("https://ipl-auction-website.vercel.app/");
+  socket = io("https://ipl-auction-website.onrender.com");
 };
 
 const join = (roomName, username) => {
