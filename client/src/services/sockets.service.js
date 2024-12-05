@@ -11,7 +11,7 @@ let socket;
 // };
 
 const connect = () => {
-  socket = io("http://localhost:8000/");
+  socket = io("https://ipl-auction-website.vercel.app/");
 };
 
 const join = (roomName, username) => {
