@@ -16,22 +16,29 @@ require("./database/connection");
 const app = express();
 const server = http.createServer(app);
 
+// const io = socketio(server, {
+//   cors: {
+//     // origin: "http://localhost:3000",
+//     origin: "https://ipl-auction-website-1.onrender.com/",
+//     credentials: true,
+//   },
+// });
+
 const io = socketio(server, {
-  cors: {
-    // origin: "http://localhost:3000",
-    origin: "https://ipl-auction-website-1.onrender.com/",
-    credentials: true,
-  },
+  cors
 });
 
 //Middleware
 app.use(cookieParser());
+// app.use(
+//   cors({
+//     // origin: "http://localhost:3000",
+//     origin: "https://ipl-auction-website-1.onrender.com/",
+//     credentials: true,
+//   })
+// );
 app.use(
-  cors({
-    // origin: "http://localhost:3000",
-    origin: "https://ipl-auction-website-1.onrender.com/",
-    credentials: true,
-  })
+  cors
 );
 
 app.use(helmet({ contentSecurityPolicy: false }));
