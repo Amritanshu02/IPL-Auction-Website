@@ -15,7 +15,7 @@
     "lint": "prettier --check .",
     "format": "prettier --write ."
   },
-  "author": "Srinivas",
+  "author": "Amritanshu",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.21.2",
