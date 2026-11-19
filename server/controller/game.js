@@ -6,13 +6,12 @@ const Auction = require("./auction");
 const liveAuctions = new Map();
 let squads = squadData;
 
-schedule.scheduleJob("fetching-squads", "0 0 * * *", () => {
+schedule.scheduleJob("fetching-squads", "0 0 * * *", async () => {
   try {
-    getSquads().then((response) => {
-      squads = response;
-    });
+    squads = await getSquads();
   } catch (error) {
     squads = squadData;
+    console.error("Squad refresh failed:", error.message);
   }
 });
 

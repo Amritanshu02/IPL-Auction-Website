@@ -41,17 +41,7 @@ const getSquad = async (squadName, browser) => {
   await page.close();
 };
 
-const connect = async () => {
-  const browser = await puppeteer.launch();
-  return browser;
-};
-
-const disconnect = async (browser) => {
-  await browser.close();
-};
-
-const getAllSquads = async () => {
-  const browser = await connect();
+const getAllSquads = async (browser) => {
   await getSquad("chennai-super-kings", browser);
   await getSquad("royal-challengers-bangalore", browser);
   await getSquad("punjab-kings", browser);
@@ -60,7 +50,6 @@ const getAllSquads = async () => {
   await getSquad("rajasthan-royals", browser);
   await getSquad("kolkata-knight-riders", browser);
   await getSquad("sunrisers-hyderabad", browser);
-  return browser;
 };
 
 const getStats = async (playerProfile, browser) => {
@@ -158,17 +147,20 @@ const getStats = async (playerProfile, browser) => {
 };
 
 const fetchPlayers = async () => {
-  return await getAllSquads().then(async (browser) => {
-    for (squad of allSquads) {
-      const players = squad.players;
-      for (const [index, player] of players.entries()) {
-        const stats = await getStats(player.profile, browser);
-        players[index]["stats"] = stats;
+  allSquads = [];
+  const args = process.env.PUPPETEER_NO_SANDBOX === "true" ? ["--no-sandbox"] : [];
+  const browser = await puppeteer.launch({ args });
+  try {
+    await getAllSquads(browser);
+    for (const squad of allSquads) {
+      for (const player of squad.players) {
+        player.stats = await getStats(player.profile, browser);
       }
     }
-    disconnect(browser);
     return allSquads;
-  });
+  } finally {
+    await browser.close();
+  }
 };
 
 module.exports = fetchPlayers;

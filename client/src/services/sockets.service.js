@@ -11,7 +11,7 @@ let socket;
 // };
 
 const connect = () => {
-  socket = io("https://ipl-auction-website.onrender.com");
+  socket = io("http://localhost:8000/");
 };
 
 const join = (roomName, username) => {

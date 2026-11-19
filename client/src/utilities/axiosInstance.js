@@ -12,7 +12,7 @@ const url =
 
 const axiosInstance = axios.create({
   withCredentials: true,
-  baseURL: "https://ipl-auction-website.onrender.com",
+  baseURL: process.env.REACT_APP_API_BASE_URL || "http://localhost:8000/",
 });
 
 export default axiosInstance;

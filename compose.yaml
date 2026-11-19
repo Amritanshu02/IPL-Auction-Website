@@ -1,0 +1,39 @@
+services:
+  frontend:
+    build: ./client
+    ports:
+      - "127.0.0.1:3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  backend:
+    build: ./server
+    init: true
+    environment:
+      PORT: "8000"
+      MONGO_URL: mongodb://database:27017/ipl_auction
+      JWT_KEY: ${JWT_KEY:-}
+    volumes:
+      - backend_auth:/var/lib/ipl-auction
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - default
+      - database
+
+  database:
+    build: ./database
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - database
+
+networks:
+  database:
+    internal: true
+
+volumes:
+  backend_auth:
+  mongo_data:

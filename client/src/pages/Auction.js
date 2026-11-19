@@ -12,9 +12,10 @@ import Loader from "./Loading";
 import io from "socket.io-client";
 
 const url =
-  process.env.NODE_ENV === "production"
+  process.env.REACT_APP_SOCKET_URL ||
+  (process.env.NODE_ENV === "production"
     ? "https://ipl-mega-auction.herokuapp.com/"
-    : "http://localhost:8000/";
+    : "http://localhost:8000/");
 
 const Auction = (props) => {
   const { user } = useContext(UserContext);
