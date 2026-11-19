@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: ipl-auction-backend
+    runtime: docker
+    plan: free
+    dockerfilePath: ./server/Dockerfile
+    dockerContext: ./server
+    healthCheckPath: /healthz
+    autoDeployTrigger: "off"
+    envVars:
+      - key: MONGO_URL
+        sync: false
+      - key: FRONTEND_ORIGIN
+        sync: false
+      - key: JWT_KEY
+        generateValue: true

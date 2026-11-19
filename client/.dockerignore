@@ -1,6 +1,7 @@
 node_modules
 build
 coverage
+.vercel
 .env
 .env.*
 .git
