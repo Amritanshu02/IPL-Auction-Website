@@ -7,34 +7,35 @@ const socketio = require("socket.io");
 const http = require("http");
 const { existsSync } = require("fs");
 const mongoose = require("mongoose");
+require("dotenv").config();
 const userRouter = require("./routes/user.route");
 const newsRouter = require("./routes/news.route");
 const auctionRouter = require("./routes/auction.route");
 // const User = require("./database/models/user.model");
 const path = require("path");
-require("dotenv").config();
 require("./database/connection");
 
 const app = express();
 const server = http.createServer(app);
+const frontendOrigin = process.env.FRONTEND_ORIGIN
+  ? new URL(process.env.FRONTEND_ORIGIN).origin
+  : null;
+const corsOptions = {
+  origin: frontendOrigin || "http://localhost:3000",
+  credentials: true,
+};
 
 const io = socketio(server, {
-  cors: {
-    origin: "http://localhost:3000",
-    // origin: "*",
-    credentials: true,
+  cors: corsOptions,
+  allowRequest: (request, callback) => {
+    const { origin } = request.headers;
+    callback(null, !frontendOrigin || !origin || origin === frontendOrigin);
   },
 });
 
 //Middleware
 app.use(cookieParser());
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    // origin: "*",
-    credentials: true,
-  })
-);
+app.use(cors(corsOptions));
 
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(morgan("dev"));
@@ -68,7 +69,8 @@ if (process.env.NODE_ENV === "production" && existsSync(clientIndex)) {
 
 require("./routes/socket.route")(io);
 
-server.listen(process.env.PORT || 8000, () => {
+const port = process.env.PORT || 8000;
+server.listen(port, () => {
   //User.collection.deleteMany({});
-  console.log("Listening on port 8000");
+  console.log(`Listening on port ${port}`);
 });

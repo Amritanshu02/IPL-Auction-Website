@@ -2,21 +2,21 @@ const express = require("express");
 const User = require("../database/models/user.model");
 const router = express.Router();
 const { auth } = require("../middleware/auth");
+const jwtCookieOptions = {
+  sameSite: "strict",
+  path: "/",
+  httpOnly: true,
+  secure: process.env.RENDER === "true",
+};
 
 // Sign up route, used for creating new accounts
 router.post("/signup", async (req, res) => {
   try {
     const user = new User({ ...req.body });
-    // const user = new User({ email, password, username });
-    console.log("user ka data:", user);
     const token = await user.generateAuthToken();
 
     // Creating a http only cookie, which is used for authorization
-    res.cookie("jwt", token, {
-      sameSite: "strict",
-      path: "/",
-      httpOnly: true,
-    });
+    res.cookie("jwt", token, jwtCookieOptions);
 
     res.status(201).send({
       success: true,
@@ -26,7 +26,6 @@ router.post("/signup", async (req, res) => {
   } catch (error) {
     const message = error.message;
     let errorMessage = "";
-    console.log(error.message);
     // Checking for duplicates
     if (message.includes("username")) {
       errorMessage =
@@ -52,11 +51,7 @@ router.post("/login", async (req, res) => {
     const token = await user.generateAuthToken();
 
     // Creating a http only cookie, which is used for authorization
-    res.cookie("jwt", token, {
-      sameSite: "strict",
-      path: "/",
-      httpOnly: true,
-    });
+    res.cookie("jwt", token, jwtCookieOptions);
 
     res.status(200).send({
       success: true,
@@ -93,7 +88,7 @@ router.get("/logout", auth, async (req, res) => {
   await User.findByIdAndUpdate(req.id, {
     $pull: { tokens: { token: req.token } },
   });
-  res.clearCookie("jwt").send({
+  res.clearCookie("jwt", jwtCookieOptions).send({
     success: true,
     message: "Successfully logged out",
   });
